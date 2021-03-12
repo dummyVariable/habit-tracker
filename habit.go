@@ -2,13 +2,10 @@ package main
 
 import (
 	"time"
-
-	"github.com/google/uuid"
 )
 
 //task contains the per completion info of a task for an habit
 type task struct {
-	ID          uuid.UUID
 	name        string
 	reps        string
 	completedAt time.Time
@@ -17,7 +14,6 @@ type task struct {
 //habit contains the habit name, habit tasks and the habit's adoption rate, and
 //habit started.
 type habit struct {
-	ID           uuid.UUID
 	name         string
 	tasks        []task
 	adoptionRate int
