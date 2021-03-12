@@ -8,3 +8,13 @@ type task struct {
 	reps        string
 	completedAt time.Time
 }
+
+//habit contains the habit name, habit tasks and the habit's adoption rate,
+//habit started and time of the last completion.
+type habit struct {
+	name         string
+	tasks        []task
+	adoptionRate int
+	startedAt    time.Time
+	lastAt       time.Time
+}
