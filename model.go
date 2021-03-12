@@ -1,6 +1,8 @@
 package main
 
 import (
+	"time"
+
 	"github.com/google/uuid"
 )
 
@@ -24,4 +26,14 @@ func newStore() habitDBStore {
 
 		habitTaskMap: make(map[habitID][]taskID),
 	}
+}
+
+func (db *habitDBStore) addHabit(newHabit habit) error {
+	ID := uuid.New()
+	newHabit.ID = ID
+	newHabit.adoptionRate = 0
+	newHabit.startedAt = time.Now()
+
+	db.habits[habitID(newHabit.ID)] = newHabit
+	return nil
 }
