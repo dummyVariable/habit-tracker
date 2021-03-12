@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"time"
 )
 
@@ -32,5 +33,17 @@ func (db *habitDBStore) addHabit(newHabit habit) error {
 	newHabit.startedAt = time.Now()
 
 	db.habits[habitName(newHabit.name)] = newHabit
+	return nil
+}
+
+func (db *habitDBStore) addTask(habit string, newTask task) error {
+
+	if _, present := db.habits[habitName(habit)]; !present {
+		return errors.New("Habit not exists")
+	}
+
+	db.tasks[taskName(newTask.name)] = newTask
+	db.habitTaskMap[habitName(habit)] = append(db.habitTaskMap[habitName(habit)], taskName(newTask.name))
+
 	return nil
 }
