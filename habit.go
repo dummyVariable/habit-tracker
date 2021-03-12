@@ -18,3 +18,12 @@ type habit struct {
 	startedAt    time.Time
 	lastAt       time.Time
 }
+
+//habitDB is implemented by datastore for the habits
+type habitDB interface {
+	addHabit(habit habit) error
+	removeHabit(habitName string) error
+
+	addTask(habitName string, task task) error
+	removeTask(habitName, taskName string) error
+}
