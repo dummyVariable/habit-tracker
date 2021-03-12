@@ -9,14 +9,13 @@ type task struct {
 	completedAt time.Time
 }
 
-//habit contains the habit name, habit tasks and the habit's adoption rate,
-//habit started and time of the last completion.
+//habit contains the habit name, habit tasks and the habit's adoption rate, and
+//habit started.
 type habit struct {
 	name         string
 	tasks        []task
 	adoptionRate int
 	startedAt    time.Time
-	lastAt       time.Time
 }
 
 //habitDB is implemented by datastore for the habits
