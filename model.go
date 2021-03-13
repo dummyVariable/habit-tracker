@@ -71,3 +71,23 @@ func (db *habitDBStore) addTask(habit string, newTask task) error {
 
 	return nil
 }
+func (db *habitDBStore) removeTask(habit, task taskName) error {
+
+	var index int
+
+	if !contains(db.habitTaskMap[habitName(habit)], task) {
+		return errors.New("Task not exists")
+	}
+
+	for i, key := range db.habitTaskMap[habitName(habit)] {
+		if key == task {
+			index = i
+			break
+		}
+
+	}
+	db.habitTaskMap[habitName(habit)] = append(db.habitTaskMap[habitName(habit)][:index], db.habitTaskMap[habitName(habit)][index+1:]...)
+	delete(db.tasks, task)
+	return nil
+
+}
