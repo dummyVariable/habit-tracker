@@ -13,12 +13,12 @@ type task struct {
 	lastBestAt  time.Time
 }
 
-//habit contains the habit name, habit tasks and the habit's adoption rate, and
-//habit started.
+//habit contains the habit name, and the habit's adoption rate, habit started and current streak.
 type habit struct {
 	name         string
 	adoptionRate int
 	startedAt    time.Time
+	streak       int
 }
 
 //habitDB is implemented by datastore for the habits
