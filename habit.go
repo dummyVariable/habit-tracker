@@ -15,7 +15,6 @@ type task struct {
 //habit started.
 type habit struct {
 	name         string
-	tasks        []task
 	adoptionRate int
 	startedAt    time.Time
 }
