@@ -31,5 +31,4 @@ type habitDB interface {
 	addTask(habitName string, task task) error
 	removeTask(habitName, taskName string) error
 	completeTask(habitName, taskName string, reps int) error
-	reportTask(habitName, taskName string) error
 }
