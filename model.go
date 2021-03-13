@@ -91,3 +91,23 @@ func (db *habitDBStore) removeTask(habit, task string) error {
 	return nil
 
 }
+
+func (db *habitDBStore) completeHabit(habit string) error {
+
+	currentHabit, exists := db.habits[habitName(habit)]
+	if !exists {
+		return errors.New("Habit not exists")
+	}
+	currentTime := time.Now()
+
+	if currentHabit.lastCompletionAt.Sub(currentTime).Hours() < 25 {
+		currentHabit.streak++
+	} else {
+		currentHabit.streak = 0
+	}
+
+	currentHabit.lastCompletionAt = currentTime
+	db.habits[habitName(habit)] = currentHabit
+
+	return nil
+}
