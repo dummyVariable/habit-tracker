@@ -7,9 +7,9 @@ import (
 //task contains the per completion info of a task for an habit
 type task struct {
 	name        string
-	reps        string
+	reps        int
 	completedAt time.Time
-	bestReps    string
+	bestReps    int
 }
 
 //habit contains the habit name, and the habit's adoption rate, habit started and current streak.
@@ -29,5 +29,5 @@ type habitDB interface {
 
 	addTask(habitName string, task task) error
 	removeTask(habitName, taskName string) error
-	completeTask(habitName, taskName, reps string) error
+	completeTask(habitName, taskName string, reps int) error
 }
