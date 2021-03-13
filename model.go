@@ -2,6 +2,7 @@ package main
 
 import (
 	"errors"
+	"fmt"
 	"time"
 )
 
@@ -140,6 +141,32 @@ func (db *habitDBStore) completeTask(habit, task string, reps int) error {
 	}
 
 	db.tasks[taskName(task)] = currentTask
+
+	return nil
+}
+func (db *habitDBStore) reportHabit(habit string) error {
+
+	currentHabit, exists := db.habits[habitName(habit)]
+	if !exists {
+		return errors.New("Habit not exists")
+	}
+
+	taskList := db.habitTaskMap[habitName(habit)]
+
+	fmt.Println(currentHabit.name)
+
+	for i, task := range taskList {
+		currentTask := db.tasks[task]
+		fmt.Println(i+1, currentTask.name, currentTask.bestReps)
+	}
+
+	fmt.Println(currentHabit.streak)
+
+	if currentHabit.lastCompletionAt.IsZero() {
+		fmt.Println("Not started yet")
+	} else {
+		fmt.Println(currentHabit.lastCompletionAt.Date())
+	}
 
 	return nil
 }
