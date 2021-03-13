@@ -25,9 +25,9 @@ type habit struct {
 type habitDB interface {
 	addHabit(habit habit) error
 	removeHabit(habitName string) error
-	updateHabit(habitName string) error
+	completeHabit(habitName string) error
 
 	addTask(habitName string, task task) error
 	removeTask(habitName, taskName string) error
-	updateTask(habitName, taskName string) error
+	completeTask(habitName, taskName string) error
 }
