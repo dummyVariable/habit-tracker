@@ -36,6 +36,30 @@ func (db *habitDBStore) addHabit(newHabit habit) error {
 	return nil
 }
 
+func contains(tasks []taskName, key taskName) bool {
+	for _, task := range tasks {
+		if key == task {
+			return true
+		}
+	}
+	return false
+}
+
+func (db *habitDBStore) removeHabit(habit string) error {
+
+	delete(db.habits, habitName(habit))
+	tasksOfHabit := db.habitTaskMap[habitName(habit)]
+
+	for key := range db.tasks {
+		if contains(tasksOfHabit, key) {
+			delete(db.tasks, key)
+		}
+	}
+	delete(db.habitTaskMap, habitName(habit))
+	return nil
+
+}
+
 func (db *habitDBStore) addTask(habit string, newTask task) error {
 
 	if _, present := db.habits[habitName(habit)]; !present {
