@@ -10,7 +10,6 @@ type task struct {
 	reps        string
 	completedAt time.Time
 	bestReps    string
-	lastBestAt  time.Time
 }
 
 //habit contains the habit name, and the habit's adoption rate, habit started and current streak.
