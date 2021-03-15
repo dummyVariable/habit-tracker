@@ -88,34 +88,26 @@ func Test_habitDBStore_addTask(t *testing.T) {
 }
 
 func Test_habitDBStore_removeTask(t *testing.T) {
-	type fields struct {
-		habits       map[habitName]habit
-		tasks        map[taskName]task
-		habitTaskMap map[habitName][]taskName
-	}
-	type args struct {
-		habit string
-		task  string
-	}
+	db := newStore()
+	db.addHabit(habit{name: "Exercise"})
+	db.addTask("Exercise", task{name: "PushUps", reps: 10})
+
 	tests := []struct {
 		name    string
-		fields  fields
-		args    args
-		wantErr bool
+		habit   string
+		task    string
+		wantErr error
 	}{
-		// TODO: Add test cases.
+		{"Removing existing task", "Exercise", "PushUps", nil},
+		{"Removing non existing Task", "Exercise", "PushUps", ErrTaskNotExists},
+		{"Removing task from no existing habit", "Read", "Read", ErrHabitNotExists},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			db := &habitDBStore{
-				habits:       tt.fields.habits,
-				tasks:        tt.fields.tasks,
-				habitTaskMap: tt.fields.habitTaskMap,
-			}
-			if err := db.removeTask(tt.args.habit, tt.args.task); (err != nil) != tt.wantErr {
-				t.Errorf("habitDBStore.removeTask() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
+
+		if err := db.removeTask(tt.habit, tt.task); err != tt.wantErr {
+			t.Errorf("Adding Task failed at %v: got = %v, wantErr %v", tt.name, err, tt.wantErr)
+		}
+
 	}
 }
 
