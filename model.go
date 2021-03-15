@@ -52,6 +52,10 @@ func contains(tasks []taskName, key taskName) bool {
 
 func (db *habitDBStore) removeHabit(habit string) error {
 
+	if _, exists := db.habits[habitName(habit)]; !exists {
+		return ErrHabitNotExists
+	}
+
 	delete(db.habits, habitName(habit))
 	tasksOfHabit := db.habitTaskMap[habitName(habit)]
 
