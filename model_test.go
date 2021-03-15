@@ -22,34 +22,24 @@ func Test_newStore(t *testing.T) {
 }
 
 func Test_habitDBStore_addHabit(t *testing.T) {
-	type fields struct {
-		habits       map[habitName]habit
-		tasks        map[taskName]task
-		habitTaskMap map[habitName][]taskName
-	}
-	type args struct {
-		newHabit habit
-	}
+
+	db := newStore()
+
 	tests := []struct {
 		name    string
-		fields  fields
-		args    args
-		wantErr bool
+		habit   habit
+		wantErr error
 	}{
-		// TODO: Add test cases.
+		{"Adding 1st habit", habit{name: "Exercise"}, nil},
+		{"Adding habit which already exists", habit{name: "Exercise"}, ErrHabitAlreadyExists},
+		{"Adding 2nd habit", habit{name: "Reading"}, nil},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			db := &habitDBStore{
-				habits:       tt.fields.habits,
-				tasks:        tt.fields.tasks,
-				habitTaskMap: tt.fields.habitTaskMap,
-			}
-			if err := db.addHabit(tt.args.newHabit); (err != nil) != tt.wantErr {
-				t.Errorf("habitDBStore.addHabit() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
+		if err := db.addHabit(tt.habit); err != tt.wantErr {
+			t.Errorf("AddHabit failed:  got = %v, wantErr %v", err, tt.wantErr)
+		}
 	}
+
 }
 
 func Test_contains(t *testing.T) {
