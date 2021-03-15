@@ -71,8 +71,12 @@ func (db *habitDBStore) removeHabit(habit string) error {
 
 func (db *habitDBStore) addTask(habit string, newTask task) error {
 
-	if _, present := db.habits[habitName(habit)]; !present {
-		return errors.New("Habit not exists")
+	if _, exists := db.habits[habitName(habit)]; !exists {
+		return ErrHabitNotExists
+	}
+
+	if _, exists := db.tasks[taskName(newTask.name)]; exists {
+		return ErrTaskAlreadyExists
 	}
 
 	db.tasks[taskName(newTask.name)] = newTask
