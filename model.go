@@ -86,6 +86,14 @@ func (db *habitDBStore) addTask(habit string, newTask task) error {
 }
 func (db *habitDBStore) removeTask(habit, task string) error {
 
+	if _, exists := db.habits[habitName(habit)]; !exists {
+		return ErrHabitNotExists
+	}
+
+	if _, exists := db.tasks[taskName(task)]; !exists {
+		return ErrTaskNotExists
+	}
+
 	var index int
 
 	if !contains(db.habitTaskMap[habitName(habit)], taskName(task)) {
