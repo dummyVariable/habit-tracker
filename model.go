@@ -30,6 +30,10 @@ func newStore() habitDBStore {
 
 func (db *habitDBStore) addHabit(newHabit habit) error {
 
+	if _, exists := db.habits[habitName(newHabit.name)]; exists {
+		return ErrHabitAlreadyExists
+	}
+
 	newHabit.adoptionRate = 0
 	newHabit.startedAt = time.Now()
 
