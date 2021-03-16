@@ -97,7 +97,7 @@ func (db *habitDBStore) removeTask(habit, task string) error {
 	var index int
 
 	if !contains(db.habitTaskMap[habitName(habit)], taskName(task)) {
-		return errors.New("Task not exists")
+		return ErrTaskNotExists
 	}
 
 	for i, key := range db.habitTaskMap[habitName(habit)] {
@@ -117,7 +117,7 @@ func (db *habitDBStore) completeHabit(habit string) error {
 
 	currentHabit, exists := db.habits[habitName(habit)]
 	if !exists {
-		return errors.New("Habit not exists")
+		return ErrHabitNotExists
 	}
 	currentTime := time.Now()
 
