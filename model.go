@@ -137,18 +137,18 @@ func (db *habitDBStore) completeTask(habit, task string, reps int) error {
 
 	_, exists := db.habits[habitName(habit)]
 	if !exists {
-		return errors.New("Habit not exists")
+		return ErrHabitNotExists
 	}
 
 	currentTask, exists := db.tasks[taskName(task)]
 	if !exists {
-		return errors.New("Task not exists")
+		return ErrTaskNotExists
 	}
 
 	taskList := db.habitTaskMap[habitName(habit)]
 
 	if !contains(taskList, taskName(task)) {
-		return errors.New("Task does not relate to habit")
+		return ErrTaskNotExists
 	}
 
 	currentTime := time.Now()
