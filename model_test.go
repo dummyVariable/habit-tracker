@@ -102,6 +102,7 @@ func Test_habitDBStore_removeTask(t *testing.T) {
 		{"Removing existing task", "Exercise", "PushUps", nil},
 		{"Removing non existing Task", "Exercise", "PushUps", ErrTaskNotExists},
 		{"Removing task from no existing habit", "Read", "Read", ErrHabitNotExists},
+		{"Removing task not related to existing habit", "Exercise", "Read", ErrTaskNotExists},
 	}
 	for _, tt := range tests {
 
