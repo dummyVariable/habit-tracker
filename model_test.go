@@ -3,6 +3,7 @@ package main
 import (
 	"reflect"
 	"testing"
+	"time"
 )
 
 func Test_newStore(t *testing.T) {
@@ -112,33 +113,31 @@ func Test_habitDBStore_removeTask(t *testing.T) {
 }
 
 func Test_habitDBStore_completeHabit(t *testing.T) {
-	type fields struct {
-		habits       map[habitName]habit
-		tasks        map[taskName]task
-		habitTaskMap map[habitName][]taskName
-	}
-	type args struct {
-		habit string
-	}
+	db := newStore()
+
+	db.addHabit(habit{name: "Exercise"})
+
 	tests := []struct {
-		name    string
-		fields  fields
-		args    args
-		wantErr bool
+		name        string
+		habit       string
+		streak      int
+		completedAt time.Time
+		wantErr     error
 	}{
-		// TODO: Add test cases.
+		{"Completing existing habit", "Exercise", 1, time.Now(), nil},
+		{"Completing a non existing habit", "Read", 0, time.Now(), ErrHabitNotExists},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			db := &habitDBStore{
-				habits:       tt.fields.habits,
-				tasks:        tt.fields.tasks,
-				habitTaskMap: tt.fields.habitTaskMap,
-			}
-			if err := db.completeHabit(tt.args.habit); (err != nil) != tt.wantErr {
-				t.Errorf("habitDBStore.completeHabit() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
+		if err := db.completeHabit(tt.habit); err != tt.wantErr {
+			t.Errorf("Completing a habit failed: got = %v, wantErr %v", err, tt.wantErr)
+		}
+
+		hbt, present := db.habits[habitName(tt.habit)]
+
+		if present && hbt.streak != tt.streak {
+			t.Errorf("Streak attribute failed: got = %v, wantErr %v", hbt.streak, tt.streak)
+		}
+
 	}
 }
 
