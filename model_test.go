@@ -143,34 +143,30 @@ func Test_habitDBStore_completeHabit(t *testing.T) {
 }
 
 func Test_habitDBStore_completeTask(t *testing.T) {
-	type fields struct {
-		habits       map[habitName]habit
-		tasks        map[taskName]task
-		habitTaskMap map[habitName][]taskName
-	}
-	type args struct {
-		habit string
-		task  string
-		reps  int
-	}
+	db := newStore()
+
+	db.addHabit(habit{name: "Exercise"})
+	db.addTask("Exercise", task{name: "PushUps", reps: 10})
+
+	db.addHabit(habit{name: "Read"})
+	db.addTask("Read", task{name: "Pages", reps: 10})
+
 	tests := []struct {
 		name    string
-		fields  fields
-		args    args
-		wantErr bool
+		habit   string
+		task    string
+		reps    int
+		wantErr error
 	}{
-		// TODO: Add test cases.
+		{"Completing existing task", "Exercise", "PushUps", 10, nil},
+		{"Completing a non existing task", "Exercise", "Squats", 10, ErrTaskNotExists},
+		{"Completing a existing task not related to habit", "Read", "PushUps", 10, ErrTaskNotExists},
+		{"Completing a task of non existing habit", "Socialise", "TalkToPeople", 10, ErrHabitNotExists},
 	}
 	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			db := &habitDBStore{
-				habits:       tt.fields.habits,
-				tasks:        tt.fields.tasks,
-				habitTaskMap: tt.fields.habitTaskMap,
-			}
-			if err := db.completeTask(tt.args.habit, tt.args.task, tt.args.reps); (err != nil) != tt.wantErr {
-				t.Errorf("habitDBStore.completeTask() error = %v, wantErr %v", err, tt.wantErr)
-			}
-		})
+
+		if err := db.completeTask(tt.habit, tt.task, tt.reps); err != tt.wantErr {
+			t.Errorf("habitDBStore.completeTask() error = %v, wantErr %v", err, tt.wantErr)
+		}
 	}
 }
