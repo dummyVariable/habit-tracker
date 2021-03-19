@@ -7,6 +7,7 @@ import (
 //habit contains the habit name, and the habit's adoption rate, habit started and current streak.
 type habit struct {
 	name             string
+	description      string
 	adoptionRate     int
 	startedAt        time.Time
 	streak           int
