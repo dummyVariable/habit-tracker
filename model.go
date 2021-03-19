@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 )
 
@@ -27,7 +28,7 @@ func (db *habitDBStore) addHabit(newHabit habit) error {
 	}
 
 	newHabit.adoptionRate = 0
-	newHabit.startedAt = time.Now()
+	newHabit.createdAt = time.Now()
 
 	db.habits[habitName(newHabit.name)] = newHabit
 	return nil
@@ -66,5 +67,27 @@ func (db *habitDBStore) completeHabit(habit string) error {
 }
 
 func (db *habitDBStore) reportHabit(habit string) error {
+
+	currentHabit, exists := db.habits[habitName(habit)]
+	if !exists {
+		return ErrHabitNotExists
+	}
+
+	fmt.Printf("Habit : %v\n", currentHabit.name)
+
+	if currentHabit.description != "" {
+		fmt.Printf("Description : %v\n", currentHabit.description)
+	}
+
+	fmt.Printf("\nAdoption Rate : %v\n", currentHabit.adoptionRate)
+	fmt.Printf("Created At : %v\n", currentHabit.createdAt.String())
+	fmt.Printf("Current Streak : %v\n", currentHabit.streak)
+
+	if currentHabit.lastCompletionAt.IsZero() {
+		fmt.Println("Not Started yet")
+	} else {
+		fmt.Printf("Last Completion at : %v\n", currentHabit.lastCompletionAt.String())
+	}
+
 	return nil
 }
