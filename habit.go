@@ -9,7 +9,7 @@ type habit struct {
 	name             string
 	description      string
 	adoptionRate     int
-	startedAt        time.Time
+	createdAt        time.Time
 	streak           int
 	lastCompletionAt time.Time
 }
