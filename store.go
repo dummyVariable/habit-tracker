@@ -1,12 +1,14 @@
 package main
 
 import (
+	"encoding/json"
+	"io/ioutil"
 	"os"
 )
 
 type habitJSONSchema struct {
-	habits []string
-	entry  []habit
+	Habits  []string `json:"habits"`
+	Entries []habit  `json:"entries"`
 }
 
 type habitJSONStore struct {
@@ -41,4 +43,25 @@ func createJSONFile(filename string) error {
 
 	return nil
 
+}
+
+func readData() habitJSONSchema {
+
+	data, err := ioutil.ReadFile("habit.json")
+	checkErr(err)
+
+	var habits habitJSONSchema
+
+	err = json.Unmarshal(data, &habits)
+	checkErr(err)
+
+	return habits
+}
+
+func writeData(habits habitJSONSchema) {
+	jsonData, err := json.Marshal(habits)
+	checkErr(err)
+
+	err = ioutil.WriteFile("habit.json", jsonData, 0644)
+	checkErr(err)
 }
