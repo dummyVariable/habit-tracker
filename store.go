@@ -6,6 +6,8 @@ import (
 	"os"
 )
 
+const jsonFileName = "habit.json"
+
 type habitJSONSchema struct {
 	Habits  []string `json:"habits"`
 	Entries []habit  `json:"entries"`
@@ -17,7 +19,7 @@ type habitJSONStore struct {
 
 func newJSONStore() habitJSONStore {
 	return habitJSONStore{
-		dataFilename: "habit.json",
+		dataFilename: jsonFileName,
 	}
 }
 
@@ -48,7 +50,7 @@ func createJSONFile(filename string) error {
 
 func readData() habitJSONSchema {
 
-	data, err := ioutil.ReadFile("habit.json")
+	data, err := ioutil.ReadFile(jsonFileName)
 	checkErr(err)
 
 	var habits habitJSONSchema
@@ -63,7 +65,7 @@ func writeData(habits habitJSONSchema) {
 	jsonData, err := json.Marshal(habits)
 	checkErr(err)
 
-	err = ioutil.WriteFile("habit.json", jsonData, 0644)
+	err = ioutil.WriteFile(jsonFileName, jsonData, 0644)
 	checkErr(err)
 }
 
@@ -81,7 +83,7 @@ func isHabitExists(habitName string) bool {
 
 func (db habitJSONStore) addHabit(habit habit) error {
 
-	if !isJSONExists("habit.json") {
+	if !isJSONExists(jsonFileName) {
 		return ErrJSONFileNotExists
 	}
 
