@@ -35,6 +35,7 @@ func createJSONFile(filename string) error {
 	}
 
 	f, err := os.Create(filename)
+	f.Write([]byte("{}")) //Err raised when unmarshalling empty json file!!
 	defer f.Close()
 
 	if err != nil {
@@ -64,4 +65,36 @@ func writeData(habits habitJSONSchema) {
 
 	err = ioutil.WriteFile("habit.json", jsonData, 0644)
 	checkErr(err)
+}
+
+func isHabitExists(habitName string) bool {
+	habits := readData()
+
+	for _, habit := range habits.Habits {
+		if habit == habitName {
+			return true
+		}
+	}
+
+	return false
+}
+
+func (db habitJSONStore) addHabit(habit habit) error {
+
+	if !isJSONExists("habit.json") {
+		return ErrJSONFileNotExists
+	}
+
+	if isHabitExists(habit.name) {
+		return ErrHabitAlreadyExists
+	}
+
+	habits := readData()
+	habits.Habits = append(habits.Habits, habit.name)
+	habits.Entries = append(habits.Entries, habit)
+
+	writeData(habits)
+
+	return nil
+
 }
