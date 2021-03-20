@@ -4,6 +4,11 @@ import (
 	"os"
 )
 
+type habitJSONSchema struct {
+	habits []string
+	entry  []habit
+}
+
 type habitJSONStore struct {
 	dataFilename string
 }
