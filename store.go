@@ -127,28 +127,32 @@ func (db habitJSONStore) removeHabit(habitName string) error {
 	return nil
 }
 
-// func (db habitJSONStore) completeHabit(habitName string) error {
-// 	if !isJSONExists(jsonFileName) {
-// 		return ErrJSONFileNotExists
-// 	}
+func (db habitJSONStore) completeHabit(habitName string) error {
 
-// 	if isHabitExists(habitName) {
-// 		return ErrHabitAlreadyExists
-// 	}
+	if !isJSONExists(jsonFileName) {
+		return ErrJSONFileNotExists
+	}
 
-// 	habits := readData()
+	if !isHabitExists(habitName) {
+		return ErrHabitNotExists
+	}
 
-// 	writeData(habits)
+	habits := readData()
 
-// 	return nil
-// }
+	completedHabit := habits.Habits[habitName]
+	currentTime := time.Now()
 
-func main() {
-	createJSONFile(jsonFileName)
+	if completedHabit.LastCompletionAt.Sub(currentTime).Hours() < 25 {
+		completedHabit.Streak++
+	} else {
+		completedHabit.Streak = 0
+	}
 
-	db := newJSONStore()
+	completedHabit.LastCompletionAt = currentTime
 
-	db.addHabit(habit{Name: "exercise", Description: "Suck dicks"})
-	db.addHabit(habit{Name: "sex", Description: "Suck dicks"})
+	habits.Entries = append(habits.Entries, completedHabit)
 
+	writeData(habits)
+
+	return nil
 }
