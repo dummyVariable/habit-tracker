@@ -10,8 +10,8 @@ import (
 const jsonFileName = "habit.json"
 
 type habitJSONSchema struct {
-	Habits  []string `json:"habits"`
-	Entries []habit  `json:"entries"`
+	Habits  map[string]habit `json:"habits"`
+	Entries []habit          `json:"entries"`
 }
 
 type habitJSONStore struct {
@@ -59,6 +59,10 @@ func readData() habitJSONSchema {
 	err = json.Unmarshal(data, &habits)
 	checkErr(err)
 
+	if habits.Habits == nil {
+		habits.Habits = make(map[string]habit)
+	}
+
 	return habits
 }
 
@@ -73,31 +77,31 @@ func writeData(habits habitJSONSchema) {
 func isHabitExists(habitName string) bool {
 	habits := readData()
 
-	for _, habit := range habits.Habits {
-		if habit == habitName {
-			return true
-		}
+	if _, present := habits.Habits[habitName]; present {
+		return true
 	}
 
 	return false
 }
 
-func (db habitJSONStore) addHabit(habit habit) error {
+func (db habitJSONStore) addHabit(newHabit habit) error {
 
 	if !isJSONExists(jsonFileName) {
 		return ErrJSONFileNotExists
 	}
 
-	if isHabitExists(habit.Name) {
+	if isHabitExists(newHabit.Name) {
 		return ErrHabitAlreadyExists
 	}
 
-	habit.AdoptionRate = 0
-	habit.CreatedAt = time.Now()
+	newHabit.AdoptionRate = 0
+	newHabit.CreatedAt = time.Now()
 
 	habits := readData()
-	habits.Habits = append(habits.Habits, habit.Name)
-	habits.Entries = append(habits.Entries, habit)
+
+	habits.Habits[newHabit.Name] = newHabit
+	habits.Entries = append(habits.Entries, newHabit)
+
 	writeData(habits)
 
 	return nil
@@ -116,18 +120,35 @@ func (db habitJSONStore) removeHabit(habitName string) error {
 
 	habits := readData()
 
-	var index int
-
-	for i, habit := range habits.Habits {
-		if habit == habitName {
-			index = i
-			break
-		}
-	}
-
-	habits.Habits = append(habits.Habits[:index], habits.Habits[index+1:]...)
+	delete(habits.Habits, habitName)
 
 	writeData(habits)
 
 	return nil
+}
+
+// func (db habitJSONStore) completeHabit(habitName string) error {
+// 	if !isJSONExists(jsonFileName) {
+// 		return ErrJSONFileNotExists
+// 	}
+
+// 	if isHabitExists(habitName) {
+// 		return ErrHabitAlreadyExists
+// 	}
+
+// 	habits := readData()
+
+// 	writeData(habits)
+
+// 	return nil
+// }
+
+func main() {
+	createJSONFile(jsonFileName)
+
+	db := newJSONStore()
+
+	db.addHabit(habit{Name: "exercise", Description: "Suck dicks"})
+	db.addHabit(habit{Name: "sex", Description: "Suck dicks"})
+
 }
