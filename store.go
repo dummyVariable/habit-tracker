@@ -103,3 +103,31 @@ func (db habitJSONStore) addHabit(habit habit) error {
 	return nil
 
 }
+
+func (db habitJSONStore) removeHabit(habitName string) error {
+
+	if !isJSONExists(jsonFileName) {
+		return ErrJSONFileNotExists
+	}
+
+	if !isHabitExists(habitName) {
+		return ErrHabitNotExists
+	}
+
+	habits := readData()
+
+	var index int
+
+	for i, habit := range habits.Habits {
+		if habit == habitName {
+			index = i
+			break
+		}
+	}
+
+	habits.Habits = append(habits.Habits[:index], habits.Habits[index+1:]...)
+
+	writeData(habits)
+
+	return nil
+}
