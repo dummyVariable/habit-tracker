@@ -23,14 +23,14 @@ func newStore() habitDBStore {
 
 func (db *habitDBStore) addHabit(newHabit habit) error {
 
-	if _, exists := db.habits[habitName(newHabit.name)]; exists {
+	if _, exists := db.habits[habitName(newHabit.Name)]; exists {
 		return ErrHabitAlreadyExists
 	}
 
-	newHabit.adoptionRate = 0
-	newHabit.createdAt = time.Now()
+	newHabit.AdoptionRate = 0
+	newHabit.CreatedAt = time.Now()
 
-	db.habits[habitName(newHabit.name)] = newHabit
+	db.habits[habitName(newHabit.Name)] = newHabit
 	return nil
 }
 
@@ -54,13 +54,13 @@ func (db *habitDBStore) completeHabit(habit string) error {
 	}
 	currentTime := time.Now()
 
-	if currentHabit.lastCompletionAt.Sub(currentTime).Hours() < 25 {
-		currentHabit.streak++
+	if currentHabit.LastCompletionAt.Sub(currentTime).Hours() < 25 {
+		currentHabit.Streak++
 	} else {
-		currentHabit.streak = 0
+		currentHabit.Streak = 0
 	}
 
-	currentHabit.lastCompletionAt = currentTime
+	currentHabit.LastCompletionAt = currentTime
 	db.habits[habitName(habit)] = currentHabit
 
 	return nil
@@ -73,20 +73,20 @@ func (db *habitDBStore) reportHabit(habit string) error {
 		return ErrHabitNotExists
 	}
 
-	fmt.Printf("Habit : %v\n", currentHabit.name)
+	fmt.Printf("Habit : %v\n", currentHabit.Name)
 
-	if currentHabit.description != "" {
-		fmt.Printf("Description : %v\n", currentHabit.description)
+	if currentHabit.Description != "" {
+		fmt.Printf("Description : %v\n", currentHabit.Description)
 	}
 
-	fmt.Printf("\nAdoption Rate : %v\n", currentHabit.adoptionRate)
-	fmt.Printf("Created At : %v\n", currentHabit.createdAt.String())
-	fmt.Printf("Current Streak : %v\n", currentHabit.streak)
+	fmt.Printf("\nAdoption Rate : %v\n", currentHabit.AdoptionRate)
+	fmt.Printf("Created At : %v\n", currentHabit.CreatedAt.String())
+	fmt.Printf("Current Streak : %v\n", currentHabit.Streak)
 
-	if currentHabit.lastCompletionAt.IsZero() {
+	if currentHabit.LastCompletionAt.IsZero() {
 		fmt.Println("Not Started yet")
 	} else {
-		fmt.Printf("Last Completion at : %v\n", currentHabit.lastCompletionAt.String())
+		fmt.Printf("Last Completion at : %v\n", currentHabit.LastCompletionAt.String())
 	}
 
 	return nil

@@ -11,7 +11,7 @@ type habit struct {
 	AdoptionRate     int       `json:"adoptionRate"`
 	CreatedAt        time.Time `json:"createdAt"`
 	Streak           int       `json:"streak"`
-	LastCompletionAt time.Time `json:"lastCompletionAt`
+	LastCompletionAt time.Time `json:"lastCompletionAt"`
 }
 
 //habitDB is implemented by datastore for the habits

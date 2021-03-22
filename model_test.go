@@ -31,9 +31,9 @@ func Test_habitDBStore_addHabit(t *testing.T) {
 		habit   habit
 		wantErr error
 	}{
-		{"Adding 1st habit", habit{name: "Exercise"}, nil},
-		{"Adding habit which already exists", habit{name: "Exercise"}, ErrHabitAlreadyExists},
-		{"Adding 2nd habit", habit{name: "Reading"}, nil},
+		{"Adding 1st habit", habit{Name: "Exercise"}, nil},
+		{"Adding habit which already exists", habit{Name: "Exercise"}, ErrHabitAlreadyExists},
+		{"Adding 2nd habit", habit{Name: "Reading"}, nil},
 	}
 	for _, tt := range tests {
 		if err := db.addHabit(tt.habit); err != tt.wantErr {
@@ -46,7 +46,7 @@ func Test_habitDBStore_addHabit(t *testing.T) {
 func Test_habitDBStore_removeHabit(t *testing.T) {
 
 	db := newStore()
-	db.addHabit(habit{name: "Exercise"})
+	db.addHabit(habit{Name: "Exercise"})
 
 	tests := []struct {
 		name    string
@@ -67,7 +67,7 @@ func Test_habitDBStore_removeHabit(t *testing.T) {
 func Test_habitDBStore_completeHabit(t *testing.T) {
 	db := newStore()
 
-	db.addHabit(habit{name: "Exercise"})
+	db.addHabit(habit{Name: "Exercise"})
 
 	tests := []struct {
 		name        string
@@ -86,8 +86,8 @@ func Test_habitDBStore_completeHabit(t *testing.T) {
 
 		hbt, present := db.habits[habitName(tt.habit)]
 
-		if present && hbt.streak != tt.streak {
-			t.Errorf("Streak attribute failed: got = %v, wantErr %v", hbt.streak, tt.streak)
+		if present && hbt.Streak != tt.streak {
+			t.Errorf("Streak attribute failed: got = %v, wantErr %v", hbt.Streak, tt.streak)
 		}
 
 	}
