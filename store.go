@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"io/ioutil"
 	"os"
+	"time"
 )
 
 const jsonFileName = "habit.json"
@@ -87,14 +88,16 @@ func (db habitJSONStore) addHabit(habit habit) error {
 		return ErrJSONFileNotExists
 	}
 
-	if isHabitExists(habit.name) {
+	if isHabitExists(habit.Name) {
 		return ErrHabitAlreadyExists
 	}
 
-	habits := readData()
-	habits.Habits = append(habits.Habits, habit.name)
-	habits.Entries = append(habits.Entries, habit)
+	habit.AdoptionRate = 0
+	habit.CreatedAt = time.Now()
 
+	habits := readData()
+	habits.Habits = append(habits.Habits, habit.Name)
+	habits.Entries = append(habits.Entries, habit)
 	writeData(habits)
 
 	return nil
