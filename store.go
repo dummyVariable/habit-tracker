@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io/ioutil"
 	"os"
 	"time"
@@ -150,9 +151,42 @@ func (db habitJSONStore) completeHabit(habitName string) error {
 
 	completedHabit.LastCompletionAt = currentTime
 
+	habits.Habits[completedHabit.Name] = completedHabit
 	habits.Entries = append(habits.Entries, completedHabit)
 
 	writeData(habits)
+
+	return nil
+}
+
+func (db habitJSONStore) reportHabit(habitName string) error {
+
+	if !isJSONExists(jsonFileName) {
+		return ErrJSONFileNotExists
+	}
+
+	if !isHabitExists(habitName) {
+		return ErrHabitNotExists
+	}
+
+	habits := readData()
+	currentHabit := habits.Habits[habitName]
+
+	fmt.Printf("\nHabit : %v\n", currentHabit.Name)
+
+	if currentHabit.Description != "" {
+		fmt.Printf("Description : %v\n", currentHabit.Description)
+	}
+
+	fmt.Printf("\nAdoption Rate : %v\n", currentHabit.AdoptionRate)
+	fmt.Printf("Created At : %v\n", currentHabit.CreatedAt.String())
+	fmt.Printf("Current Streak : %v\n", currentHabit.Streak)
+
+	if currentHabit.LastCompletionAt.IsZero() {
+		fmt.Println("Not Started yet")
+	} else {
+		fmt.Printf("Last Completion at : %v\n", currentHabit.LastCompletionAt.String())
+	}
 
 	return nil
 }
