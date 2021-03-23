@@ -85,6 +85,40 @@ func isHabitExists(habitName string) bool {
 	return false
 }
 
+func calcAdoptionRate(habitName string) int {
+
+	var streak, missed float32
+	var current time.Time
+
+	habits := readData()
+
+	habitEntries := make([]habit, 0)
+
+	for _, habit := range habits.Entries {
+		if habitName == habit.Name {
+			habitEntries = append(habitEntries, habit)
+		}
+	}
+
+	current = habits.Habits[habitName].CreatedAt
+
+	for _, entry := range habitEntries {
+		if entry.LastCompletionAt.Sub(current).Hours() < 25 {
+			streak++
+		} else {
+			missed++
+		}
+		current = entry.LastCompletionAt
+	}
+
+	if missed == 0 {
+		return 100
+	}
+
+	return int((streak / (streak + missed)) * 100)
+
+}
+
 func (db habitJSONStore) addHabit(newHabit habit) error {
 
 	if !isJSONExists(jsonFileName) {
@@ -101,7 +135,6 @@ func (db habitJSONStore) addHabit(newHabit habit) error {
 	habits := readData()
 
 	habits.Habits[newHabit.Name] = newHabit
-	habits.Entries = append(habits.Entries, newHabit)
 
 	writeData(habits)
 
@@ -150,6 +183,7 @@ func (db habitJSONStore) completeHabit(habitName string) error {
 	}
 
 	completedHabit.LastCompletionAt = currentTime
+	completedHabit.AdoptionRate = calcAdoptionRate(habitName)
 
 	habits.Habits[completedHabit.Name] = completedHabit
 	habits.Entries = append(habits.Entries, completedHabit)
