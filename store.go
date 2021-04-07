@@ -85,10 +85,9 @@ func isHabitExists(habitName string) bool {
 	return false
 }
 
-func calcAdoptionRate(habitName string) int {
+func calcAdoptionRate(habitName string, completedHabit habit) int {
 
 	var streak, missed float32
-	var current time.Time
 
 	habits := readData()
 
@@ -100,15 +99,25 @@ func calcAdoptionRate(habitName string) int {
 		}
 	}
 
-	current = habits.Habits[habitName].CreatedAt
+	habitEntries = append(habitEntries, completedHabit)
 
-	for _, entry := range habitEntries {
-		if entry.LastCompletionAt.Sub(current).Hours() < 25 {
+	var prev, temp time.Time
+
+	for i, entry := range habitEntries {
+
+		if i == 0 {
+			temp = habits.Habits[habitName].CreatedAt
+		} else {
+			temp = prev
+		}
+
+		if entry.LastCompletionAt.Sub(temp).Hours() < 25 {
 			streak++
 		} else {
 			missed++
 		}
-		current = entry.LastCompletionAt
+
+		prev = entry.LastCompletionAt
 	}
 
 	if missed == 0 {
@@ -176,14 +185,14 @@ func (db habitJSONStore) completeHabit(habitName string) error {
 	completedHabit := habits.Habits[habitName]
 	currentTime := time.Now()
 
-	if completedHabit.LastCompletionAt.Sub(currentTime).Hours() < 25 {
+	if currentTime.Sub(completedHabit.LastCompletionAt).Hours() < 25 {
 		completedHabit.Streak++
 	} else {
 		completedHabit.Streak = 0
 	}
 
 	completedHabit.LastCompletionAt = currentTime
-	completedHabit.AdoptionRate = calcAdoptionRate(habitName)
+	completedHabit.AdoptionRate = calcAdoptionRate(habitName, completedHabit)
 
 	habits.Habits[completedHabit.Name] = completedHabit
 	habits.Entries = append(habits.Entries, completedHabit)
